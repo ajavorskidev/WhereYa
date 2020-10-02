@@ -1,0 +1,7 @@
+{
+  "name": "WhereYA",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}

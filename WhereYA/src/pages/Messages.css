@@ -1,0 +1,10 @@
+#messageInput {
+  position: absolute;
+  width: 100%;
+}
+
+#messageRow {
+  position: absolute;
+  bottom: 60px;
+  width: 150%;
+}
