@@ -25,7 +25,7 @@ class Messages extends React.Component {
     this.state = {
       newMessage: '',
     };
-    const socket = io('http://192.168.1.17:3000');
+    const socket = io('http://192.168.1.9:3000');
     socket.on('chat message', (message) => {
       this.props.getMessages(message);
     });
@@ -36,7 +36,7 @@ class Messages extends React.Component {
     this.setState({ newMessage: event.detail.value });
   }
   handleSend() {
-    sendMessage(this.state.newMessage);
+    sendMessage(`${this.props.name}: ${this.state.newMessage}`);
     this.setState({ newMessage: '' });
   }
   render() {
@@ -67,6 +67,7 @@ class Messages extends React.Component {
               <IonCol>
                 <IonItem id="messageInput">
                   <IonTextarea
+                    expand="full"
                     value={this.state.newMessage}
                     onIonChange={(event) => this.handleChange(event)}
                   ></IonTextarea>
@@ -74,6 +75,8 @@ class Messages extends React.Component {
               </IonCol>
               <IonCol>
                 <IonButton
+                  id="messageSend"
+                  expand="full"
                   id="messageSubmit"
                   onClick={() => {
                     this.handleSend();
@@ -91,6 +94,7 @@ class Messages extends React.Component {
 }
 const mapState = (state) => ({
   messages: state.messages,
+  name: state.userSettings.name,
 });
 const mapDispatch = (dispatch) => ({
   getMessages(message) {

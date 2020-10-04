@@ -6,5 +6,8 @@
 #messageRow {
   position: absolute;
   bottom: 60px;
-  width: 150%;
+  width: 100%;
+}
+#messageSend {
+  width: 100%;
 }

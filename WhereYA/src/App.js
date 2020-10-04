@@ -46,11 +46,11 @@ const App = () => (
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
           <IonTabButton tab="home" href="/home">
-            <IonIcon icon={triangle} />
+            <IonIcon icon={square} />
             <IonLabel>Home</IonLabel>
           </IonTabButton>
           <IonTabButton tab="messages" href="/messages">
-            <IonIcon icon={ellipse} />
+            <IonIcon icon={square} />
             <IonLabel>Messages</IonLabel>
           </IonTabButton>
           <IonTabButton tab="settings" href="/setting">

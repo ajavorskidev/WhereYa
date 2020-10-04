@@ -1,7 +1,7 @@
 import io from 'socket.io-client';
-const serverUrl = 'http://192.168.1.17:3000';
+const serverUrl = 'http://192.168.1.9:3000';
 let socket;
-export const connect = (url) => {
+export const connectToServer = (url) => {
   socket = io(serverUrl || url);
   return socket;
 };

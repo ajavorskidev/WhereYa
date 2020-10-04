@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import {
   IonButton,
   IonCard,
@@ -12,7 +13,7 @@ import {
   IonToolbar,
 } from '@ionic/react';
 import './Home.css';
-import { connect, disconnect } from '../server';
+import { connectToServer, disconnect } from '../server';
 
 const Home = (props) => {
   const [connection = 'disconnected', connecting] = useState();
@@ -39,8 +40,8 @@ const Home = (props) => {
           expand="block"
           onClick={() => {
             if (connection !== 'connected') {
-              connect();
-              connecting('connected');
+              connectToServer(props.serverUrl);
+              connecting(`Connected to ${props.serverUrl}`);
             } else {
               disconnect();
               connecting('disconnected');
@@ -53,5 +54,7 @@ const Home = (props) => {
     </IonPage>
   );
 };
-
-export default Home;
+const mapState = (state) => ({
+  serverUrl: state.userSettings.serverUrl,
+});
+export default connect(mapState)(Home);
