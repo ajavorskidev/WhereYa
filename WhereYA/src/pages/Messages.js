@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import io from 'socket.io-client';
 import {
   IonContent,
   IonHeader,
@@ -14,59 +16,85 @@ import {
 } from '@ionic/react';
 import './Messages.css';
 import { sendMessage, fetchMessages } from '../server';
+import { getMessages } from '../store/store';
+import messages from '../store/messages';
 
-const Messages = () => {
-  const [textVal, setVal] = useState();
-  const [messages, fetch] = useState();
-  return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Messages</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent fullscreen>
-        <IonHeader collapse="condense">
+class Messages extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      newMessage: '',
+    };
+    const socket = io('http://192.168.1.17:3000');
+    socket.on('chat message', (message) => {
+      this.props.getMessages(message);
+    });
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSend = this.handleSend.bind(this);
+  }
+  handleChange(event) {
+    this.setState({ newMessage: event.detail.value });
+  }
+  handleSend() {
+    sendMessage(this.state.newMessage);
+    this.setState({ newMessage: '' });
+  }
+  render() {
+    return (
+      <IonPage>
+        <IonHeader>
           <IonToolbar>
-            <IonTitle size="large">Messages</IonTitle>
+            <IonTitle>Messages</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <IonGrid>
-          {messages
-            ? messages.map((message) => {
-                return (
-                  <IonRow>
-                    <IonCol>{message}</IonCol>
-                  </IonRow>
-                );
-              })
-            : ''}
-          <IonRow id="messageRow">
-            <IonCol>
-              <IonItem id="messageInput">
-                <IonTextarea
-                  value={textVal}
-                  onIonChange={(event) => setVal(event.detail.value)}
-                ></IonTextarea>
-              </IonItem>
-            </IonCol>
-            <IonCol>
-              <IonButton
-                id="messageSubmit"
-                onClick={() => {
-                  sendMessage(textVal);
-                  setVal('');
-                  fetch(fetchMessages());
-                }}
-              >
-                Send
-              </IonButton>
-            </IonCol>
-          </IonRow>
-        </IonGrid>
-      </IonContent>
-    </IonPage>
-  );
-};
-
-export default Messages;
+        <IonContent fullscreen>
+          <IonHeader collapse="condense">
+            <IonToolbar>
+              <IonTitle size="large">Messages</IonTitle>
+            </IonToolbar>
+          </IonHeader>
+          <IonGrid>
+            {this.props.messages.length > 0
+              ? this.props.messages.map((message) => {
+                  return (
+                    <IonRow key={1}>
+                      <IonCol>{message}</IonCol>
+                    </IonRow>
+                  );
+                })
+              : ''}
+            <IonRow id="messageRow">
+              <IonCol>
+                <IonItem id="messageInput">
+                  <IonTextarea
+                    value={this.state.newMessage}
+                    onIonChange={(event) => this.handleChange(event)}
+                  ></IonTextarea>
+                </IonItem>
+              </IonCol>
+              <IonCol>
+                <IonButton
+                  id="messageSubmit"
+                  onClick={() => {
+                    this.handleSend();
+                  }}
+                >
+                  Send
+                </IonButton>
+              </IonCol>
+            </IonRow>
+          </IonGrid>
+        </IonContent>
+      </IonPage>
+    );
+  }
+}
+const mapState = (state) => ({
+  messages: state.messages,
+});
+const mapDispatch = (dispatch) => ({
+  getMessages(message) {
+    dispatch(getMessages(message));
+  },
+});
+export default connect(mapState, mapDispatch)(Messages);

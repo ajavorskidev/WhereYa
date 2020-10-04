@@ -12,7 +12,7 @@ import {
   IonToolbar,
 } from '@ionic/react';
 import './Home.css';
-import { connect } from '../server';
+import { connect, disconnect } from '../server';
 
 const Home = (props) => {
   const [connection = 'disconnected', connecting] = useState();
@@ -38,11 +38,16 @@ const Home = (props) => {
         <IonButton
           expand="block"
           onClick={() => {
-            connect();
-            connecting('connected');
+            if (connection !== 'connected') {
+              connect();
+              connecting('connected');
+            } else {
+              disconnect();
+              connecting('disconnected');
+            }
           }}
         >
-          Join
+          {connection === 'disconnected' ? 'Join' : 'Leave'}
         </IonButton>
       </IonContent>
     </IonPage>

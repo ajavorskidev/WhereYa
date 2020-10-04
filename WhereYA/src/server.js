@@ -3,16 +3,24 @@ const serverUrl = 'http://192.168.1.17:3000';
 let socket;
 export const connect = (url) => {
   socket = io(serverUrl || url);
+  return socket;
+};
+export const disconnect = () => {
+  socket.disconnect();
 };
 export const sendMessage = (message) => {
-  socket.emit('chat message', message);
+  if (socket) {
+    socket.emit('chat message', message);
+    return message;
+  }
 };
 
 export const fetchMessages = () => {
-  const messageList = [];
-  socket.on('chat message', (msg) => {
-    messageList.push(msg);
-    console.log('chat message' + msg);
-  });
-  return messageList;
+  if (socket) {
+    socket.on('chat message', (msg) => {
+      console.log(typeof msg);
+      console.log('chat message ' + msg);
+      return msg;
+    });
+  }
 };
